@@ -34,13 +34,33 @@ Un compte utilisateur de :
 Une fois les pré-requis complétés, lancer la commande suivante afin de cloner le projet :
 
 ```bash
-git clone 
+git clone https://github.com/Rxinui/iut-atelier-ci-cd.git
 ```
 
-### Tutoriel: Hello world 
+### Choix d'atelier
 
-### Debutant: Single Page Web with dynamic post
+Pour commencer un atelier, il est nécessaire de travailler sur une branche personnelle. Voir les commandes ci-dessous.
 
-### Intermédiaire: Docker service with frontend / backend
+0. Tutoriel: Hello world 
 
-### Entreprise: microservice
+```bash
+git checkout -b atl0_<nom>_<prenom> origin/atl0
+```
+
+1. Debutant: Single Page Web with dynamic post
+
+```bash
+git checkout -b atl1_<nom>_<prenom> origin/atl1
+```
+
+2. Intermédiaire: Docker service with frontend / backend
+
+```bash
+git checkout -b atl2_<nom>_<prenom> origin/atl2
+```
+
+3. Entreprise: microservice
+
+```bash
+git checkout -b atl3_<nom>_<prenom> origin/atl3
+```
