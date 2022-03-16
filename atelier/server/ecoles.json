@@ -1,0 +1,42 @@
+{
+  "1": {
+    "nom": "Université de Toulouse - Jean Jaurès",
+    "groupe": "UT"
+  },
+  "2": {
+    "nom": "Université de Toulouse - Capitole",
+    "groupe": "UT"
+  },
+  "3": {
+    "nom": "Université de Toulouse - Paul Sabatier",
+    "groupe": "UT"
+  },
+  "4": {
+    "nom": "Ecole nationale de l'aviation civile",
+    "groupe": "ISAE"
+  },
+  "5": {
+    "nom": "Institut Supérieur de l'Aéronautique et de l'Espace",
+    "groupe": "ISAE"
+  },
+  "6": {
+    "nom": "ENSEEIHT Toulouse",
+    "groupe": "INP"
+  },
+  "7": {
+    "nom": "ENM Toulouse",
+    "groupe": "INP"
+  },
+  "8": {
+    "nom": "ENSAT Toulouse",
+    "groupe": "INP"
+  },
+  "9": {
+    "nom": "ENSIACET Toulouse",
+    "groupe": "INP"
+  },
+  "10": {
+    "nom": "Institut national des sciences appliquées de Toulouse",
+    "groupe": "INSA"
+  }
+}
