@@ -1,0 +1,25 @@
+name: CI/CD pour Atelier 1 
+# Controle de la chaine CI/CD
+on:
+  # TODO
+# Les taches (jobs) à effectuer
+jobs:
+  # Chaque tache est représentée par un serveur, ce qui permet l'indépendance des tâches.
+  build-test: # Tache pour build et test
+    runs-on: ubuntu-latest # Choix de l'OS du serveur pour l'étape 'build-test'
+    steps:
+      - name: "[CI] Build l'environnement en récupérant le repo entier de votre branche."
+        uses: actions/checkout@v2 # Ne pas toucher
+      - name: "[CI] Initialiser l'environnement Python"
+        run: cd atelier/ # TODO
+      - name: "[CI] Démarrer le serveur Python"
+        run: cd atelier/ # TODO
+      - name: "[CI] Tester le serveur Python"
+        run: echo TODO # TODO
+  deploy: # Tache pour deploiement
+    runs-on: ubuntu-latest # Choix de l'OS du serveur pour l'étape 'build-test'
+    needs: build-test # Indique que ce job démarre uniquement si le job 'build-test' est un succès
+    steps:
+      - uses: actions/checkout@v2 # Ne pas toucher
+      - name: "[CD] Publication du code"
+        run: echo TODO # TODO
