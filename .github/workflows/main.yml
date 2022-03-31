@@ -1,6 +1,8 @@
 name: CI/CD pour Atelier 1 
 # Controle de la chaine CI/CD
 on:
+  push:
+    branches: [atl1_solution]
   # TODO
 # Les taches (jobs) à effectuer
 jobs:
@@ -13,11 +15,11 @@ jobs:
       - name: "[DEBUG] Afficher l'arborescence des fichiers"
         run: ls -l .
       - name: "[CI] Initialiser l'environnement Python"
-        run: cd atelier/ # TODO
+        run: cd atelier/ && ./init.sh # TODO
       - name: "[CI] Démarrer le serveur Python"
-        run: cd atelier/ # TODO
+        run: cd atelier/ && ./run.sh # TODO
       - name: "[CI] Tester le serveur Python"
-        run: cd atelier/ # TODO
+        run: cd atelier/ && pytest # TODO
   deploy: # Tache pour deploiement
     runs-on: ubuntu-latest # Choix de l'OS du serveur pour l'étape 'build-test'
     needs: build-test # Indique que ce job démarre uniquement si le job 'build-test' est un succès
