@@ -2,7 +2,10 @@
 
 @author Rxinui
 
-## Atelier 1 : Single Page Web
+## Atelier 1 : Ecoles toulousaines API JSON
+
+Dans l'atelier 1, nous allons réaliser une chaine CI/CD qui se contentera d'**un serveur d'intégration** pour la CI et d'un **environnement de production** pour la CD.
+![Objectif atelier 1](img/atl1_objectif.png)
 ### Pré-requis
 
 Les technologies qui seront utilisées lors de cet atelier nécessitent :
@@ -29,12 +32,12 @@ Le dossier `atelier/` contient le code source de l'application. N'oubliez pas de
 
 - `atelier/init.sh` initialise un environnement Python avec les dépendances nécessaires au bon fonctionnement de l'application
 - `atelier/run.sh` démarre l'application Python dans le bon environnement
-- `atelier/main.py` correspond au code source de l'application. C'est une API REST basique qui affiche quelques écoles d'supérieurs de Toulouse.
-- `atelier/ecoles.json` contient les données nécessaires au fonctionnement de l'application. Répertorie un extrait des écoles d'supérieurs de Toulouse.
+- `atelier/main.py` correspond au code source de l'application. C'est une API REST basique qui affiche quelques écoles supérieures de Toulouse.
+- `atelier/ecoles.json` contient les données nécessaires au fonctionnement de l'application. Répertorie un extrait des écoles supérieures de Toulouse.
 
 ### Exercice
 
-Intégrer et déployer une API REST écrit en Python. L'API est construit par FastAPI et permet de lister les écoles d'supérieurs de Toulouse disponible dans notre base de données.
+Intégrer et déployer une API REST écrit en Python. L'API est construit par FastAPI et permet de lister les écoles supérieures de Toulouse disponible dans notre base de données.
 
 Dans un premier temps, on va établir une chaine CI/CD en 2 taches : `build-test` puis `deploy`.
 Dans un second temps, on rajoutera une fonctionnalitée à notre API puis on vérifira que la chaine CI/CD créé est bien fonctionnelle.
@@ -47,7 +50,7 @@ Dans un second temps, on rajoutera une fonctionnalitée à notre API puis on vé
 
 3. **TODO**: Écrire l'étape de démarrage du serveur python en se servant du script `atelier/run.sh`
 
-4. **TODO**: Écrire l'étape de test en lancant la commande `pytest` depuis le dossier `atelier/`.
+4. **TODO**: Écrire l'étape de test en lancant la commande `pytest` depuis le dossier `atelier/`. ([voir doc](https://docs.pytest.org/en/6.2.x/usage.html#specifying-tests-selecting-tests))
 
 5. **TODO**: Enregistrer les modifications et pousser les sur votre GitHub. Regarder votre chaine CI/CD. Si c'est un succès alors passez à la partie CD sinon corriger vos erreurs puis répéter cette étape.
 
@@ -70,7 +73,7 @@ Et ajouter dans votre variable d'environnement `PATH` le chemin d'accès du paqu
 
 **Note**: si une erreur apparait, il est possible que votre système ne trouve pas le path du paquet `deta`. Ajouter le chemin du paquet dans votre variable d'environnement `PATH`.
 
-4. Lancer la commande suivante en étant positionné dans le dossier `atelier`: `deta new --project default`.
+4. Lancer la commande suivante en étant positionné dans le dossier `atelier/` : `deta new --project default`.
 5. Récupérer la valeur "endpoint" retourné par votre console (https://<nom_aleatoire>.deta.dev/). Cette URL correspond à URL de votre site en production.
 6. Lancer la commande `deta deploy` qui deploiera automatiquement notre application Python.
 7. Visiter l'URL de votre site en production récupérée plus tôt.

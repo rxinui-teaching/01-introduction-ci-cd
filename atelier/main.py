@@ -45,16 +45,16 @@ def home() -> dict:
         dict: présentation au format JSON
     """
     return {
-        "message": "Bienvenue à l'atelier 1. Cette API liste les écoles supérieurs de Toulouse.",
+        "message": "Bienvenue à l'atelier 1. Cette API liste les écoles supérieures de Toulouse.",
         "routes": {
             "/ecoles": {
                 "GET": {
-                    "description": "Liste toutes les écoles supérieurs de Toulouse"
+                    "description": "Liste toutes les écoles supérieures de Toulouse"
                 }
             },
             "/ecoles?groupe={groupe}": {
                 "GET": {
-                    "description": "Liste toutes les écoles supérieurs d'un {groupe} donné (ie. INP, UT...)",
+                    "description": "Liste toutes les écoles supérieures d'un {groupe} donné (ie. INP, UT...)",
                     "arguments": ["groupe"],
                 }
             },
