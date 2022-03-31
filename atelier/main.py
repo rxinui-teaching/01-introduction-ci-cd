@@ -66,9 +66,9 @@ def home() -> dict:
             "/ecoles/new": {
                 "GET": {
                     "description": "TODO!! Ajoute une nouvelle école dans la base de données par son {nom} et son {groupe}.",
-                    "arguments": ["nom","groupe"],
+                    "arguments": ["nom", "groupe"],
                 }
-            }
+            },
         },
     }
 
@@ -95,7 +95,8 @@ def ecoles(groupe: Optional[str] = None) -> dict:
 
 
 # TODO a completer
-def ajouter_ecole() -> dict: # TODO a completer
+@app.get("/ecoles/new")
+def ajouter_ecole(nom: str, groupe: str) -> dict:  # TODO a completer
     """Ajoute une école dans la BDD par les paramètres {nom} et {groupe}.
 
     Args:
@@ -105,7 +106,8 @@ def ajouter_ecole() -> dict: # TODO a completer
         dict: Renvoie l'école qui a été ajoutée
     """
     # TODO a completer
-    return 
+    return __add_ecole(nom, groupe)
+
 
 @app.get("/ecoles/{ecole_id}")
 def ecole_par_id(ecole_id: str) -> dict:

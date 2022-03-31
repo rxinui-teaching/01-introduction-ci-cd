@@ -1,14 +1,14 @@
 {
   "1": {
-    "nom": "Université de Toulouse - Jean Jaurès",
+    "nom": "Universit\u00e9 de Toulouse - Jean Jaur\u00e8s",
     "groupe": "UT"
   },
   "2": {
-    "nom": "Université de Toulouse - Capitole",
+    "nom": "Universit\u00e9 de Toulouse - Capitole",
     "groupe": "UT"
   },
   "3": {
-    "nom": "Université de Toulouse - Paul Sabatier",
+    "nom": "Universit\u00e9 de Toulouse - Paul Sabatier",
     "groupe": "UT"
   },
   "4": {
@@ -16,7 +16,7 @@
     "groupe": "ISAE"
   },
   "5": {
-    "nom": "Institut Supérieur de l'Aéronautique et de l'Espace",
+    "nom": "Institut Sup\u00e9rieur de l'A\u00e9ronautique et de l'Espace",
     "groupe": "ISAE"
   },
   "6": {
@@ -36,7 +36,11 @@
     "groupe": "INP"
   },
   "10": {
-    "nom": "Institut national des sciences appliquées de Toulouse",
+    "nom": "Institut national des sciences appliqu\u00e9es de Toulouse",
     "groupe": "INSA"
+  },
+  "11": {
+    "nom": "IUT_Blagnac",
+    "groupe": "IUT"
   }
 }
