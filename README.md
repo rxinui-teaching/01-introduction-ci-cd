@@ -53,7 +53,6 @@ Le code source du projet se trouve dans le dossier `atelier`. On y retrouve :
 - un fichier de test `atelier/test.sh` qui vérifie que le contenue de la balise `<h1>` soit égale à la valeur stockée dans la variable shell `expected_result`.
 
 Les objectifs de cet atelier sont :
-
 - A. Construire une chaine CI/CD qui permet de build, tester et déployer.
 - B. Mettre en avant l'exécution des étapes **tester** et **déployer**.
 - C. Re-déclencher la chaine CI/CD à chaque nouveauté.

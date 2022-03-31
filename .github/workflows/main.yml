@@ -3,7 +3,7 @@ name: CI/CD pour Atelier 0 # Le nom de la chaine CI/CD (workflow)
 on:
   # Lance la chaine CI/CD lorsque un `git push` est effectué sur les branches indiquées
   push:
-    branches: [atl0] #TODO A completer
+    branches: [atl0_solution] #TODO A completer
 # Les taches (jobs) à effectuer
 jobs:
   # Chaque tache (job) est représentée par un serveur, ce qui permet l'indépendance des tâches.
@@ -15,7 +15,16 @@ jobs:
       - name: "[DEBUG] Lister l'arborescence de fichiers sur le serveur"
         run: ls -l . # étape informative
       - name: "[CI] Test du code"
-        run: echo KO #TODO A completer
+        run: cd atelier/ && ./test.sh
       - name: "[CD] Publication du code"
-        run: echo KO #TODO A completer
+        # Regle le pb natif de l'action utilisé qui s'executait malgré que le test précédent eu été en erreur. 
+        # On force l'execution de cette tache quand toutes les précédentes sont validées
+        if: ${{ success() }} 
+        uses: nwtgck/actions-netlify@v1.2
+        with:
+          publish-dir: "./atelier"
+          production-branch: atl0_solution
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         
