@@ -17,11 +17,11 @@ jobs:
       - name: "[CI] Démarrer le serveur Python"
         run: cd atelier/ # TODO
       - name: "[CI] Tester le serveur Python"
-        run: echo TODO # TODO
+        run: cd atelier/ # TODO
   deploy: # Tache pour deploiement
     runs-on: ubuntu-latest # Choix de l'OS du serveur pour l'étape 'build-test'
     needs: build-test # Indique que ce job démarre uniquement si le job 'build-test' est un succès
     steps:
       - uses: actions/checkout@v2 # Ne pas toucher
       - name: "[CD] Publication du code"
-        run: echo TODO # TODO
+        run: exit 1 # TODO
