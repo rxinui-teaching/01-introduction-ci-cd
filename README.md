@@ -52,7 +52,7 @@ Dans un second temps, on rajoutera une fonctionnalitée à notre API puis on vé
 
 4. **TODO**: Écrire l'étape de test en lancant la commande `pytest` depuis le dossier `atelier/`. ([voir doc](https://docs.pytest.org/en/6.2.x/usage.html#specifying-tests-selecting-tests))
 
-5. **TODO**: Enregistrer les modifications et pousser les sur votre GitHub. Regarder votre chaine CI/CD. Si c'est un succès alors passez à la partie CD sinon corriger vos erreurs puis répéter cette étape.
+5. **TODO**: **Enregistrer les modifications et pousser les sur votre GitHub. Regarder votre chaine CI/CD. Si c'est un succès alors passez à la partie CD sinon corriger vos erreurs puis répéter cette étape.**
 
 #### Partie CD
 
