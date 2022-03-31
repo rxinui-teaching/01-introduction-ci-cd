@@ -73,25 +73,25 @@ def home() -> dict:
     }
 
 
-# @app.get("/ecoles")
-# def ecoles(groupe: Optional[str] = None) -> dict:
-#     """Liste tous les écoles disponible dans la base de données.
+@app.get("/ecoles")
+def ecoles(groupe: Optional[str] = None) -> dict:
+    """Liste tous les écoles disponible dans la base de données.
 
-#     Args:
-#         groupe (Optional[str], optional): Filtre les écoles par leur groupe. Defaults to None.
+    Args:
+        groupe (Optional[str], optional): Filtre les écoles par leur groupe. Defaults to None.
 
-#     Returns:
-#         dict: écoles selon les filtres donnés en format JSON
-#     """
-#     return (
-#         {
-#             _id: ecole
-#             for _id, ecole in __get_ecoles().items()
-#             if ecole["groupe"] == groupe
-#         }
-#         if groupe
-#         else __get_ecoles()
-#     )
+    Returns:
+        dict: écoles selon les filtres donnés en format JSON
+    """
+    return (
+        {
+            _id: ecole
+            for _id, ecole in __get_ecoles().items()
+            if ecole["groupe"] == groupe
+        }
+        if groupe
+        else __get_ecoles()
+    )
 
 
 # TODO a completer
@@ -107,23 +107,23 @@ def ajouter_ecole() -> dict: # TODO a completer
     # TODO a completer
     return 
 
-# @app.get("/ecoles/{ecole_id}")
-# def ecole_par_id(ecole_id: str) -> dict:
-#     """Liste l'école possédant l'id {ecole_id}.
+@app.get("/ecoles/{ecole_id}")
+def ecole_par_id(ecole_id: str) -> dict:
+    """Liste l'école possédant l'id {ecole_id}.
 
-#     Args:
-#         ecole_id (str): identifiant de l'école
+    Args:
+        ecole_id (str): identifiant de l'école
 
-#     Raises:
-#         HTTPException: {ecole_id} inconnu
+    Raises:
+        HTTPException: {ecole_id} inconnu
 
-#     Returns:
-#         dict: école en format JSON
-#     """
-#     ecole = __get_ecoles().get(ecole_id)
-#     if not ecole:
-#         raise HTTPException(
-#             status_code=404,
-#             detail=f"Ecole pour id={ecole_id} est inexistante dans notre base de données.",
-#         )
-#     return ecole
+    Returns:
+        dict: école en format JSON
+    """
+    ecole = __get_ecoles().get(ecole_id)
+    if not ecole:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Ecole pour id={ecole_id} est inexistante dans notre base de données.",
+        )
+    return ecole
