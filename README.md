@@ -19,12 +19,14 @@ Un compte utilisateur sur :
 
 ### Introduction
 
-Dans ce tutoriel, on va mettre en place une chaîne CI/CD simplistique avec pour seul intéret **la découverte des outils** et la mise en oeuvre des étapes CI/CD classique.
+Dans ce tutoriel, on va mettre en place **une chaîne CI/CD simplistique** avec pour seul intéret **la découverte des outils** et la mise en oeuvre des étapes CI/CD classique. De ce fait, cet atelier est concu pour **minimiser et simplifier** les taches de programmations. Les scripts d'automatisation systèmes (fichiers `.sh`) et code source vous sont fournis.
 
 Une chaîne de CI/CD classique possède à minima deux étapes :
 
 1. Build : initialisation de l'environnement de développement et test du code
 2. Deploy : publication du code au sein d'un environment de production
+
+![Objectif de l'atelier 0](img/atl0_objectif.png)
 
 Dans cet atelier, on ira au plus simple. On dispose d'un fichier `index.html` qui affiche le message `Hello World`.
 On mettra en place une chaine dont la partie CI se chargera d'intégrer le changement de message, et la partie CD qui appliquera se changement sur l'environnement de production hébergé par Netlify
@@ -51,9 +53,10 @@ Le code source du projet se trouve dans le dossier `atelier`. On y retrouve :
 - un fichier de test `atelier/test.sh` qui vérifie que le contenue de la balise `<h1>` soit égale à la valeur stockée dans la variable shell `expected_result`.
 
 Les objectifs de cet atelier sont :
-A. Construire une chaine CI/CD qui permet de build, tester et déployer.
-B. Mettre en avant l'exécution des étapes **tester** et **déployer**.
-C. Re-déclencher la chaine CI/CD à chaque nouveauté.
+
+- A. Construire une chaine CI/CD qui permet de build, tester et déployer.
+- B. Mettre en avant l'exécution des étapes **tester** et **déployer**.
+- C. Re-déclencher la chaine CI/CD à chaque nouveauté.
 
 #### Partie CI
 
@@ -75,7 +78,7 @@ cd atelier/ && ./test.sh
 
 Vous obtenez `Test h1 text: OK` qui indique que le contenu de la balise `<h1>` est bien `Hello World`.
 
-À présent, il faut indiquer à l'étape de test d'exécuter ce fichier de test.
+À présent, il faut que ce fichier de test soit exécuter automatiquement par la chaine CI/CD, à l'étape de test.
 
 **TODO**: modifier le fichier `.github/workflows/main.yml` à l'étape de test pour executer le script de test `atelier/test.sh`. ([aide](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#understanding-the-workflow-file))
 
@@ -99,6 +102,8 @@ Cliquer sur le 1er item, correspondant au 1er déclenchement enregistré du au `
 
 ![Success 1](./img/atl0_success_1.png)
 
+Cliquer sur le bouton `build-test-deploy` pour afficher les détails de la chaine CI/CD.
+
 #### Partie CD
 
 Netlify est une solution gratuite qui permet d'héberger des sites statiques. On utilise l'Action qui permet de [déployer notre code source sur la plateforme Netlify](https://github.com/marketplace/actions/netlify-actions), qui nous sert d'environnement de production, c'est à dire, l'environnement public.
@@ -109,7 +114,7 @@ Avant d'automatiser le déploiement sur Netlify, il est nécessaire de le déplo
 
 1. Se rendre sur [cette page](https://app.netlify.com/) et cliquer sur l'onglet **Site** puis **Import from Git**.
 2. Cliquer sur le bouton de connexion **GitHub** et autoriser l'accès à votre repo.
-3. Séléctionner le repo Github puis remplissez les informations suivantes :
+3. Séléctionner le repo Github, cliquer une fois sur le bouton `Customize` puis remplissez les informations suivantes :
 
 - **Branch to deploy**: `atl0_actif`
 - **Base directory**: `atelier/`
@@ -146,6 +151,18 @@ Enfin, remplacer l'étape existante de publication par le code ci-dessous, qui a
     NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 ```
 
+**Explication du code** : GitHub Actions nous sert de **serveur d'intégration**. Pour faciliter l'automatisation des tâches les plus connues et utilisées par les développeurs, la plateforme GitHub propose ce qu'elle appelle des **Actions** qui sont **plugins / extensions** qui facilitent l'écriture de la chaine CI/CD sur des étapes définies. Chaque utilisateur GitHub peut développer ses propres actions et ses actions seront accessible par tous.
+Décortiquons le code ci-dessus :
+
+- Le mot-clé `uses:` : indique que cette étape utilise une action (et non une commande shell). La valeur attendue correspond à URI de l'action.
+- `nwtgck/actions-netlify@v1.2` : est l'action que nous utilisons. Elle facilite (_cache_) le déploiement sur Netlify. L'URI est décomposée comme-ceci :
+  - `nwtgck/` : l'utilisateur GitHub qui met en service l'action
+  - `actions-netlify` : le repository GitHub de l'utilisateur `nwtgck` où se trouve le code source de son action `actions-netlify`.
+  - `@v1.2` : le tag de la version a utilisé. Une action peut avoir plusieurs versions (ie. `@v1`, `@beta-version`, ...)
+- Le mot-clé `with:` : contient tous les paramètres de l'action utilisée (obligatoires et/ou optionnels) à définir.
+  - `publish-dir:` est un paramètre attendu de l'action `actions-netlify` qui prendra comme valeur `"./atelier"` lorsque la chaine CI/CD s'exécutera.
+- Le mot-clé `env:` : contient toutes les variables d'environnements et secrets qui sont attendus par l'action pour fonctionner.
+
 Pour tester que le déploiement s'effectue automatiquement à chaque `push`, nous allons rajouter du texte dans notre fichier `atelier/index.html`
 Remplacer les balises `<body>...</body>` par le contenu ci-dessous :
 
@@ -171,6 +188,8 @@ git push
 
 La chaine CI/CD a du être déclenchée à nouveau. Si le status de la chaine CI/CD est verte, alors votre site en production a du être mis-à-jour.
 
+**TODO**: Vérifiez que votre site en production affiche les changements.
+
 Nous considérons que notre chaine CI/CD est correcte et terminée ! Nous allons donc produire un cas d'erreur afin de planter notre chaine.
 
 Modifier dans le fichier `atelier/index.html` la balise `<h1>...</h1>` par le code ci-dessous
@@ -188,7 +207,7 @@ git push
 
 **TODO**: À quelle étape notre chaine CI/CD s'est plantée ? Pourquoi ? Notre site en production a-t-il été mis à jour ? Vérifiez.
 
-**TODO**: Trouver ce qu'il faille faire pour que le titre `Hello World of CI/CD` soit acceptée, puis exécuter les commandes suivantes.
+**TODO**: Trouver ce qu'il faille faire pour que notre chaine CI/CD soit de nouveau acceptée, puis exécuter les commandes suivantes.
 
 ```bash
 git commit -a -m "Cas d'erreur sur notre chaine CI/CD (résolu)";
