@@ -59,18 +59,19 @@ Les technologies qui seront utilisées lors de ces ateliers nécessitent:
 Une installation de :
 - [git](https://git-scm.com/downloads)
 - [Python 3](https://www.python.org/downloads/)
-- [Docker](https://docs.docker.com/engine/install/#supported-platforms) (atelier 2,3)
+- [Docker](https://docs.docker.com/engine/install/#supported-platforms) (atelier 2)
 
 Un compte utilisateur sur :
 - [Github (intégration)](https://github.com/login)
 - [Netlify (déploiement)](https://app.netlify.com/) (atelier 0)
-- [Docker Hub (build)](https://hub.docker.com/) (atelier 2,3)
+- [Deta.sh (déploiement)](https://web.deta.sh/) (atelier 1)
+- [Docker Hub (repository)](https://hub.docker.com/) (atelier 2)
 
 ### Choix d'atelier
 
 Pour commencer un atelier, il est nécessaire de forker le projet. Cliquer sur **Fork** (en haut à droite) et choisissez votre compte. Cela permet de cloner mon repo GitHub sur votre compte personnel.
 
-Cloner le votre repository sur votre machine locale en cliquant sur **Code**. Copier-coller l'URL qui est apparue et lancer sur votre machine la commande suivante : 
+Cloner le votre repository forké sur votre compte GitHub sur votre machine locale en cliquant sur **Code**. Copier-coller l'URL qui est apparue et lancer sur votre machine la commande suivante : 
 
 ```bash
 git clone <url-copiée>
@@ -84,20 +85,14 @@ Pour séléctionner et débuter un atelier, veuillez lancer une des commandes in
 git checkout -b atl0_actif origin/atl0
 ```
 
-1. Debutant: Single Page Web with dynamic post
+1. Debutant: Ecoles toulousaines API Json
 
 ```bash
 git checkout -b atl1_actif origin/atl1
 ```
 
-2. Intermédiaire: Docker service with frontend / backend
+2. Intermédiaire: Play with Docker (Non-terminé: version démo ?)
 
 ```bash
 git checkout -b atl2_actif origin/atl2
-```
-
-3. Entreprise: microservice
-
-```bash
-git checkout -b atl3_actif origin/atl3
 ```
