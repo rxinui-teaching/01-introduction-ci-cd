@@ -1,4 +1,4 @@
-name: CI/CD pour Atelier 0 # Le nom de la chaine CI/CD (workflow)
+name: CI/CD pour Atelier 0 David Boumejald # Le nom de la chaine CI/CD (workflow)
 # Controle de la chaine CI/CD
 on:
   # Lance la chaine CI/CD lorsque un `git push` est effectué sur les branches indiquées
