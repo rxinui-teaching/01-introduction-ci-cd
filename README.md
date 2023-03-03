@@ -15,31 +15,35 @@ Une installation de :
 Un compte utilisateur sur :
 
 - [Github (intégration)](https://github.com/login)
-- [Netlify (déploiement)](https://app.netlify.com/)
+- [Docker Hub (repository)](https://hub.docker.com/)
 
 ### Introduction
 
-Dans ce tutoriel, on va mettre en place **une chaîne CI/CD simplistique** avec pour seul intéret **la découverte des outils** et la mise en oeuvre des étapes CI/CD classique. De ce fait, cet atelier est concu pour **minimiser et simplifier** les taches de programmations. Les scripts d'automatisation systèmes (fichiers `.sh`) et code source vous sont fournis.
+Dans ce tutoriel, on va mettre en place **une chaîne CI/CD** en se basant sur l'atelier Docker de Sébastien Josset. Dans un premier temps, on s'intéressera à la partie intégration continue (CI) puis à la partie déploiment continu (CD).
 
-Une chaîne de CI/CD classique possède à minima deux étapes :
+#### Continuous Integration
 
-1. Build : initialisation de l'environnement de développement et test du code
-2. Deploy : publication du code au sein d'un environment de production
+Dans le cas de Docker, un schéma classique d'une chaine CI est :
 
-![Objectif de l'atelier 0](img/atl0_objectif.png)
+1. **build**: créer une image Docker à partir d'un fichier de description (Dockerfile)
+2. **test**: assurer que l'image Docker générée est fonctionnelle
+3. **upload**: déposer l'image Docker dans un repository (Docker Hub dans notre cas) afin de le mettre à disposition de l'équipe 
 
-Dans cet atelier, on ira au plus simple. On dispose d'un fichier `index.html` qui affiche le message `Hello World`.
-On mettra en place une chaine dont la partie CI se chargera d'intégrer le changement de message, et la partie CD qui appliquera se changement sur l'environnement de production hébergé par Netlify
+Ces étapes, appellées **jobs**, doivent constituer une succession d'étapes d'intégration automatisées qui forme une chaine logique et successive (d'où le terme _chaine d'intégration continue_). Étant donnée qu'on parle d'automatisation, **il est nécessaire de définir l'évènement déclencheur de cette chaîne**. Par exemple :
 
-Note: on parle d'environnement de développement (localhost / machine) et de production (serveur public .ie Netlify dans cet atelier).
+- Évènement temporel: à une date précise ou périodique (tous les dimanches à 09:00)
+- Évènement utilisateur: à chaque commit effectué sous le serveur git
+- Autres évènements: un état final d'une autre chaine CI (dépendance entre chaines CI)
+
+Le choix d'évènement est d'autant crucial que variable. Il dépend du besoin, de la méthodologie de travail voire de l'architecture et le coût d'un projet.
 
 ### GitHub Action : responsable de la chaine CI/CD
 
 GitHub propose la création d'une chaine CI/CD avec sa solution maison nommée **GitHub Action**.
 L'avantage de **GitHub Action** est qu'il s'applique sur les codes sources hébergés sur GitHub et offre au développeurs des modules de CI/CD appelées **Actions** disponible sur le [GitHub marketplace](https://github.com/marketplace?type=actions).
 
-À la racine du projet, au sein d'un repo GitHub, un dossier `.github/workflows` doit être déclaré. Il contiendra la définition des chaînes CI/CD.
-Chaque chaine CI/CD correspond à un fichier YAML. Dans cet atelier, notre chaine CI/CD est contenu dans le fichier `.github/workflows/main.yml`
+À la racine du projet, au sein d'un repo GitHub, un dossier `.github/workflows` doit être déclaré. Il contiendra la définition des chaînes CI/CD appelées **workflows**.
+Chaque workflow correspond à un fichier YAML. Dans cet atelier, notre workflow est contenu dans le fichier `.github/workflows/main.yml`
 
 GitHub Action utilise la syntaxe YAML (similaire au JSON) et suit les [propriétées énoncées dans la documentation officielle](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions).
 
