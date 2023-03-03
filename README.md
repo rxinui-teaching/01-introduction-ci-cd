@@ -48,6 +48,8 @@ Un développeur officiel de Python.org, effectue une mise à jour sur `Python 3.
 
 Par cette méthode CI/CD, le développeur n'a eu à se soucier uniquement du développement de sa fonctionnalité car c'est la chaine CI/CD qui est responsable des tests et du déploiement du produit.
 
+**Note : le procédé décrit est applicable sur d'autre type de technologie, comme la virtualisation de services sous Docker.**
+
 ## Ateliers
 
 Les ateliers illustrent la mise en place une chaine CI/CD simple à l'aide d'outils gratuit et utilisé dans le monde de l'entreprise / projet personnel.
@@ -58,41 +60,17 @@ Les technologies qui seront utilisées lors de ces ateliers nécessitent:
 
 Une installation de :
 - [git](https://git-scm.com/downloads)
-- [Python 3](https://www.python.org/downloads/)
 - [Docker](https://docs.docker.com/engine/install/#supported-platforms) (atelier 2)
 
 Un compte utilisateur sur :
 - [Github (intégration)](https://github.com/login)
-- [Netlify (déploiement)](https://app.netlify.com/) (atelier 0)
-- [Deta.sh (déploiement)](https://web.deta.sh/) (atelier 1)
 - [Docker Hub (repository)](https://hub.docker.com/) (atelier 2)
 
 ### Choix d'atelier
 
-Pour commencer un atelier, il est nécessaire de forker le projet. Cliquer sur **Fork** (en haut à droite) et choisissez votre compte. Cela permet de cloner mon repo GitHub sur votre compte personnel.
+Les ateliers sont à effectuer sur **votre repository Docker effectué avec Sébastien Josset**. Cela dit, l'énoncé des ateliers se situe sur ce repository même.
 
-Cloner le votre repository forké sur votre compte GitHub sur votre machine locale en cliquant sur **Code**. Copier-coller l'URL qui est apparue et lancer sur votre machine la commande suivante : 
+Pour séléctionner un atelier, veuillez vous déplacer sur une de ses branches en fonction de l'atelier entamé :
 
-```bash
-git clone <url-copiée>
-```
-
-Pour séléctionner et débuter un atelier, veuillez lancer une des commandes indiquées ci-dessous.
-
-0. Tutoriel: Hello world of CI/CD
-
-```bash
-git checkout -b atl0_actif origin/atl0
-```
-
-1. Debutant: Ecoles toulousaines API Json
-
-```bash
-git checkout -b atl1_actif origin/atl1
-```
-
-2. Intermédiaire: Play with Docker (Non-terminé: version démo ?)
-
-```bash
-git checkout -b atl2_actif origin/atl2
-```
+- `atl0`: Docker dans la CI
+- `atl1`: Docker dans la CD
