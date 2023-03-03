@@ -49,20 +49,16 @@ GitHub Action utilise la syntaxe YAML (similaire au JSON) et suit les [propriét
 
 Dans cet atelier, on épargnera plusieurs concepts et termes de GitHub Action. Je vous incite donc à lire le [guide officiel](https://docs.github.com/en/actions/learn-github-actions).
 
-1. **TOD0**: déclarer votre premier workflow appelé `docker.yaml`. Ajouter ce workflow a votre repository puis pousser vos changements sur github. Vérifier que votre workflow est présent, dans l'onglet _Actions_, sur le panel situé à votre gauche.
+1. **TODO**: déclarer votre premier workflow appelé `docker.yaml`. Ajouter ce workflow a votre repository puis pousser vos changements sur github. Vérifier que votre workflow est présent, dans l'onglet _Actions_, sur le panel situé à votre gauche.
 
-#### Code source
+### Une chaine CI sur un Dockerfile
 
-Le code source du projet se trouve dans le dossier `atelier`. On y retrouve :
+Cette chaîne va se baser sur le [schéma classique](#continuous-integration) décrit au-dessus.
 
-- un fichier statique `atelier/index.html` qui affiche un simple `Hello World` dans une balise `<h1>`.
-- un fichier de test `atelier/test.sh` qui vérifie que le contenue de la balise `<h1>` soit égale à la valeur stockée dans la variable shell `expected_result`.
+1. Déclarer un premier **job** nommé `build`. Ce job devra construire l'image Docker à partir du Dockerfile.
+1. Déclarer un second **job** nommé `test`.
+1. Déclarer un second **job** nommé `upload`
 
-Les objectifs de cet atelier sont :
-
-- A. Construire une chaine CI/CD qui permet de build, tester et déployer.
-- B. Mettre en avant l'exécution des étapes **tester** et **déployer**.
-- C. Re-déclencher la chaine CI/CD à chaque nouveauté.
-
+### Une chaine CI sur un docker-compose
 
 _That's all folks :)_
