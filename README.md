@@ -49,7 +49,7 @@ GitHub propose la création d'une chaine CI/CD avec sa solution maison nommée *
 L'avantage de **GitHub Action** est qu'il s'applique sur les codes sources hébergés sur GitHub et offre au développeurs des modules de CI/CD appelées **Actions** disponible sur le [GitHub marketplace](https://github.com/marketplace?type=actions).
 
 À la racine du projet, au sein d'un repo GitHub, un dossier `.github/workflows` doit être déclaré. Il contiendra la définition des chaînes CI/CD appelées **workflows**.
-Chaque workflow correspond à un fichier YAML. Dans cet atelier, le fichier `.github/workflows/main.yml` représente un exemple de workflow appelé _main_. Veuillez vous en servir comme modèle afin de construire votre propre workflow.
+Chaque workflow correspond à un fichier YAML. Dans cet atelier, le fichier `.github/workflows/main.yml` représente un exemple de workflow appelé _main_. Veuillez vous en servir comme modèle afin de construire votre propre workflow dans votre propre repository GitHub.
 
 GitHub Action utilise la syntaxe YAML (similaire au JSON) et suit les [propriétées énoncées dans la documentation officielle](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions).
 
@@ -63,31 +63,31 @@ Cette chaîne va se baser sur le [schéma classique](#continuous-integration) d�
 
 Tout d'abord, nous définissons l'évènement déclencheur de notre chaine CI. Il faut s'interroger sur **quand** souhaitons-nous que notre chaine s'exécute.
 
-**TODO**: Définir (git) `push` comme évènement déclencheur de notre chaine.
+2. **TODO**: Définir (git) `push` comme évènement déclencheur de notre chaine.
 
 Á présent, on peut s'occuper de la définition des étapes à exécuter. Pour se faire, un **job** doit être défini auquel un ensemble d'étapes seront attribués sous sa sections `steps: ` qui contiendra une liste d'actions à réaliser. Ces actions représentent soit des commandes Shell/Unix, soit des appels à modules appelés `actions` qui se trouvent sur le [GitHub Marketplace](https://github.com/marketplace?category=&query=&type=actions&verification=). 
 
-**TODO**: Définir le premier **job** nommé `build-test-upload`. Configurer ce job pour qu'il tourne sous Linux.
+3. **TODO**: Définir le premier **job** nommé `build-test-upload`. Configurer ce job pour qu'il tourne sous Linux.
 
 Ce **job** devra contenir les étapes qui vont permettre de construire l'image Docker à partir du Dockerfile, tester l'image créée et téléverser cette image au sein d'un repository Docker. 
 
-**TODO**: Dans la section `steps: `, écrire la première étape qui va build l'image Docker. _NOTE: on se contentera ici d'exécuter la commande Shell qui permet la construction d'une image Docker._
+4. **TODO**: Dans la section `steps: `, écrire la première étape qui va build l'image Docker. _NOTE: on se contentera ici d'exécuter la commande Shell qui permet la construction d'une image Docker._
 
 Avant de continuer sur la définition d'étapes, testons le bon fonctionnement de notre chaine CI. Ajouter les nouveaux changements apportés au projet à l'aide d'un `git add .` depuis la racine du projet. Créer un nouveau commit avec un message explicit en faisant `git commit -am "<message du commit>"`. 
 
-**TODO**: Déclencher pour la première fois votre chaine CI en utilisant l'évènement déclencheur.
+5. **TODO**: Déclencher pour la première fois votre chaine CI en utilisant l'évènement déclencheur.
 
 Vérifier que sur github.com dans l'onglet _Actions_ de votre projet, que votre chaine CI est en cours d'exécution ou terminée. Si succès, veuillez continuer l'atelier. Sinon, debugger les éventuelles erreurs (_ne pas hésiter à demander de l'aide sur le serveur discord_).
 
-**TODO**: Rajouter une nouvelle étape, qui servira à tester l'image construire en démarrant un _container_ docker basé sur cette image. Puis, vérifier que le serveur nginx soit bien accessible via son protocole HTTP(S).
+6. **TODO**: Rajouter une nouvelle étape, qui servira à tester l'image construire en démarrant un _container_ docker basé sur cette image. Puis, vérifier que le serveur nginx soit bien accessible via son protocole HTTP(S).
 
-**TODO**: Enregistrer les changements apportés à l'aide des commandes `git` vues précédemments puis déclencher de nouveau votre chaine CI. Vérifier sur github.com que tout soit en ordre.
+7. **TODO**: Enregistrer les changements apportés à l'aide des commandes `git` vues précédemments puis déclencher de nouveau votre chaine CI. Vérifier sur github.com que tout soit en ordre.
 
 Si échec, veuillez debugger avant de continuer.
 
-**TODO**: Rajouter l´étape **upload** qui permet de déposer votre image docker au sein d'un repository docker, ici votre espace Docker Hub personnel.
+8. **TODO**: Rajouter l´étape **upload** qui permet de déposer votre image docker au sein d'un repository docker, ici votre espace Docker Hub personnel.
 
-**TODO**: Enregistrer les changements apportés à l'aide des commandes `git` vues précédemments puis déclencher de nouveau votre chaine CI. Vérifier sur github.com que tout soit en ordre.
+9. **TODO**: Enregistrer les changements apportés à l'aide des commandes `git` vues précédemments puis déclencher de nouveau votre chaine CI. Vérifier sur github.com que tout soit en ordre.
 
 Si toutes les étapes fonctionnent correctement, votre chaine CI est terminée. À présent, à chaque fois que votre répertoire GitHub connaitra des changements, GitHub Actions se chargera de tester la validité de votre projet en déclenchant votre chaine CI. Ainsi, si vous introduisez un bug (ou une faute de syntaxe), votre chaine CI vous remontera qu'une erreur est survenue. Cette chaine CI est donc utile car :
 - Elle automatise la partie fonctionnelle qui est: build, test et upload au sein d'un repertoire public.
