@@ -1,0 +1,61 @@
+name: Exemple de workflow pour atl0 # Le nom de la chaine CI/CD (workflow)
+# Controle de la chaine CI/CD
+on:
+  # Lance la chaine CI/CD lorsque un `git push` est effectué sur les branches indiquées
+  push:
+jobs:
+  # Chaque tache (job) est représentée par un serveur, ce qui permet l'indépendance des étapes a executer.
+  build-test-deploy: # L'identifiant du job
+    runs-on: ubuntu-latest # Choix de l'OS du job
+    steps: # Sections des étapes à effectuer au sein du job
+      # actions/checkout@v3 permet de télécharger votre repository github au sein du job
+      # En interne, il effectue un `git clone` de votre projet puis un `git checkout`
+      # au sein de la branche qui a déclenché l'evenement `push`
+      - name: "[CI] Build l'environnement en récupérant le repo entier de votre branche."
+        uses: actions/checkout@v3 
+
+      # Une fois votre répertoire récupérer, vous pouvez effectuer un `ls -l` pour
+      # lister et verifier que votre repository github est bien téléchargé
+      - name: "[DEBUG] Lister l'arborescence de fichiers sur le serveur"
+        run: | # le | permet d'ecrire plusieurs ligne de code shell au sein d'une meme etape 
+          echo "[INFO] Current directory"
+          pwd 
+          echo "[INFO] List my files"
+          ls -l . 
+
+      # Vous pouvez écrire autant d'étapes nécessaire en déclarant à minima les directives
+      # 'name:' pour nommer votre étape
+      # 'run:' pour lancer une ligne de commande Shell
+      # 'uses:' pour utiliser une action disponible sur github marketplace
+      # NOTE choisir entre 'uses:' ou 'run:'. Impossible d'utiliser les deux au sein d'une meme étape
+      - name: "[DEBUG] Check docker installed"
+        run: which docker; which docker-compose
+
+      - name: "Build docker image"
+        run: docker build -t yolo-apache:latest .
+        
+      - name: "Démarrer une instance de yolo-apache"
+        run: docker run -d --rm --name yolo-1 -p 8080:80 yolo-apache:latest
+
+      - name: "Tester la connexion sur yolo-1"
+        shell: bash
+        run: |
+          sleep 10 
+          curl -s -I localhost:8080
+          if [ $? -eq 0 ]; then
+            echo "[INFO] Serveur web yolo-1 est accessible"
+            exit 0
+          fi
+          echo "[ERROR] Serveur web yolo-1 est inaccessible"
+          exit 1 
+
+      - name: "Push docker image sur Docker Hub"
+        env:
+          DOCKER_LOGIN: my-docker-login
+        run: |
+          echo "[INFO] Login to Docker Hub account"
+          docker login -u="${DOCKER_LOGIN}" -p="${{ secrets.DOCKER_HUB_PASSWORD }}"
+          echo "[INFO] Rename image tag to comply with Docker Hub naming convention"
+          docker tag yolo-apache:latest ${DOCKER_LOGIN}/yolo-apache:latest 
+          echo "[INFO] Push yolo-apache image onto Docker Hub"
+          docker image push ${DOCKER_LOGIN}/yolo-apache:latest 

@@ -2,9 +2,9 @@
 
 @author Rxinui
 
-## Atelier 0 : Hello World of CI/CD
+## Atelier 0 : Docker dans la CI
 
-### Pré-requis
+### :bangbang: Pré-requis
 
 Les technologies qui seront utilisées lors de cet atelier nécessitent :
 
@@ -15,204 +15,114 @@ Une installation de :
 Un compte utilisateur sur :
 
 - [Github (intégration)](https://github.com/login)
-- [Netlify (déploiement)](https://app.netlify.com/)
+- [Docker Hub (repository)](https://hub.docker.com/)
 
-### Introduction
+### :book: Introduction
 
-Dans ce tutoriel, on va mettre en place **une chaîne CI/CD simplistique** avec pour seul intéret **la découverte des outils** et la mise en oeuvre des étapes CI/CD classique. De ce fait, cet atelier est concu pour **minimiser et simplifier** les taches de programmations. Les scripts d'automatisation systèmes (fichiers `.sh`) et code source vous sont fournis.
+Dans ce tutoriel, on va mettre en place **une chaîne CI/CD** en se basant sur l'atelier Docker de Sébastien Josset. Dans un premier temps, on s'intéressera à la partie intégration continue (CI) puis à la partie déploiment continu (CD).
 
-Une chaîne de CI/CD classique possède à minima deux étapes :
+### :recycle: Continuous Integration
 
-1. Build : initialisation de l'environnement de développement et test du code
-2. Deploy : publication du code au sein d'un environment de production
+Dans le cas de Docker, un schéma classique d'une chaine CI consiste à :
 
-![Objectif de l'atelier 0](img/atl0_objectif.png)
+1. **build**: créer une image Docker à partir d'un fichier de description (Dockerfile)
+2. **test**: tester le fonctionnement de l'image Docker 
+3. **upload**: déposer l'image Docker dans un repository (Docker Hub dans notre cas) afin de le mettre à disposition de l'équipe 
 
-Dans cet atelier, on ira au plus simple. On dispose d'un fichier `index.html` qui affiche le message `Hello World`.
-On mettra en place une chaine dont la partie CI se chargera d'intégrer le changement de message, et la partie CD qui appliquera se changement sur l'environnement de production hébergé par Netlify
+Ces étapes sont exécutées au sein d'un environnement virtuel, appellé **job**, basé sur un _GitHub Runner_ (comprendre, un serveur éligible à GitHub Actions, fournit par github.com). Les successions des étapes automatisées forment une chaine logique et successive (d'où le terme _chaine d'intégration continue_). Étant donné qu'on parle d'automatisation, **il est nécessaire de définir l'évènement déclencheur de cette chaîne**. Par exemple :
 
-Note: on parle d'environnement de développement (localhost / machine) et de production (serveur public .ie Netlify dans cet atelier).
+- Évènement temporel: à une date précise ou périodique (tous les dimanches à 09:00)
+- Évènement utilisateur: à chaque commit effectué sous le serveur git
+- Autres évènements: un état final d'une autre chaine CI (dépendance entre chaines CI)
 
-### GitHub Action : responsable de la chaine CI/CD
+Le choix d'évènement est d'autant crucial que variable. Il dépend du besoin, de la méthodologie de travail voire de l'architecture et le coût d'un projet.
+
+Pour synthétiser, il est important de définir dans l'ordre suivant:
+1. Un **évènement déclencheur**
+2. Un ou plusieurs **jobs**
+3. Une ou plusieurs **étapes** qui seront exécutées au sein d'un **job**
+
+
+### :octocat: GitHub Action : responsable de la chaine CI/CD
 
 GitHub propose la création d'une chaine CI/CD avec sa solution maison nommée **GitHub Action**.
 L'avantage de **GitHub Action** est qu'il s'applique sur les codes sources hébergés sur GitHub et offre au développeurs des modules de CI/CD appelées **Actions** disponible sur le [GitHub marketplace](https://github.com/marketplace?type=actions).
 
-À la racine du projet, au sein d'un repo GitHub, un dossier `.github/workflows` doit être déclaré. Il contiendra la définition des chaînes CI/CD.
-Chaque chaine CI/CD correspond à un fichier YAML. Dans cet atelier, notre chaine CI/CD est contenu dans le fichier `.github/workflows/main.yml`
+À la racine du projet, au sein d'un repo GitHub, un dossier `.github/workflows` doit être déclaré. Il contiendra la définition des chaînes CI/CD appelées **workflows**.
+Chaque workflow correspond à un fichier YAML. Dans cet atelier, le fichier `.github/workflows/main.yml` représente un exemple de workflow appelé _main_. Veuillez vous en servir comme modèle afin de construire votre propre workflow dans votre propre repository GitHub.
 
 GitHub Action utilise la syntaxe YAML (similaire au JSON) et suit les [propriétées énoncées dans la documentation officielle](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions).
 
 Dans cet atelier, on épargnera plusieurs concepts et termes de GitHub Action. Je vous incite donc à lire le [guide officiel](https://docs.github.com/en/actions/learn-github-actions).
 
-#### Code source
+1. **TODO**: déclarer votre premier workflow appelé `docker.yaml`. Ajouter ce workflow a votre repository puis pousser vos changements sur github. Vérifier que votre workflow est présent, dans l'onglet _Actions_, sur le panel situé à votre gauche.
 
-Le code source du projet se trouve dans le dossier `atelier`. On y retrouve :
+### :whale: Une chaine CI pour Docker
 
-- un fichier statique `atelier/index.html` qui affiche un simple `Hello World` dans une balise `<h1>`.
-- un fichier de test `atelier/test.sh` qui vérifie que le contenue de la balise `<h1>` soit égale à la valeur stockée dans la variable shell `expected_result`.
+Cette chaîne va se baser sur le [schéma classique](#continuous-integration) décrit au-dessus.
 
-Les objectifs de cet atelier sont :
-- A. Construire une chaine CI/CD qui permet de build, tester et déployer.
-- B. Mettre en avant l'exécution des étapes **tester** et **déployer**.
-- C. Re-déclencher la chaine CI/CD à chaque nouveauté.
+Tout d'abord, nous définissons l'évènement déclencheur de notre chaine CI. Il faut s'interroger sur **quand** souhaitons-nous que notre chaine s'exécute.
 
-#### Partie CI
+2. **TODO**: Définir (git) `push` comme évènement déclencheur de notre chaine.
 
-##### Indiquer quand déclencher le chaine CI/CD
+Á présent, on peut s'occuper de la définition des étapes à exécuter. Pour se faire, un **job** doit être défini auquel un ensemble d'étapes seront attribués sous sa sections `steps: ` qui contiendra une liste d'actions à réaliser. Ces actions représentent soit des commandes Shell/Unix, soit des appels à modules appelés `actions` qui se trouvent sur le [GitHub Marketplace](https://github.com/marketplace?category=&query=&type=actions&verification=). 
 
-Une chaine CI/CD sur GitHub Action se déclenche lorsqu'un **évenement GitHub survient sur le repo**. Dans notre cas, on souhaite que la chaine se lance lorsqu'un ou des commits sont `push` depuis votre branche locale `atl0_actif` vers cette même branche hébergé sur GitHub `origin/atl0_actif`.
+3. **TODO**: Définir le premier **job** nommé `build-test-upload`. Configurer ce job pour qu'il tourne sous Linux.
 
-![Schéma du déclenchement CI/CD](./img/atl0-declenchement_ci_cd.png)
+Ce **job** devra contenir les étapes qui vont permettre de construire l'image Docker à partir du Dockerfile, tester l'image créée et téléverser cette image au sein d'un repository Docker. 
 
-**TODO**: modifier le fichier `.github/workflows/main.yml` pour déclencher la chaine CI/CD sur un push de votre branche. ([aide](https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#using-events-to-trigger-workflows))
+4. **TODO**: Dans la section `steps: `, écrire la première étape qui va build l'image Docker. _NOTE: on se contentera ici d'exécuter la commande Shell qui permet la construction d'une image Docker._
 
-##### Donner les instructions de l'étape **test**
+Avant de continuer sur la définition d'étapes, testons le bon fonctionnement de notre chaine CI. Ajouter les nouveaux changements apportés au projet à l'aide d'un `git add .` depuis la racine du projet. Créer un nouveau commit avec un message explicit en faisant `git commit -am "<message du commit>"`. 
 
-En local (uniquement Linux/MacOS), lancer le script de test présent dans `atelier/` comme ceci :
+5. **TODO**: Déclencher pour la première fois votre chaine CI en utilisant l'évènement déclencheur.
 
-```bash
-cd atelier/ && ./test.sh
+Vérifier que sur github.com dans l'onglet _Actions_ de votre projet, que votre chaine CI est en cours d'exécution ou terminée. Si succès, veuillez continuer l'atelier. Sinon, debugger les éventuelles erreurs (_ne pas hésiter à demander de l'aide sur le serveur discord_).
+
+6. **TODO**: Rajouter une nouvelle étape, qui servira à tester l'image construire **en démarrant un _container_ docker basé sur cette image**. Puis, vérifier que le serveur web (apache?) soit bien accessible via son protocole HTTP(S) (en utilisant la commande [curl](https://curl.se/docs/manpage.html) par exemple).
+
+**NOTE**: sous Shell, il est possible de vérifier si la dernière commande éxécutée s'est terminée correctement (`exit 0`) ou non (exit avec un code différent de `0`). La variable spéciale `$?` permet de retourner le code de terminaison de la dernière commande effectuée.
+
+7. **TODO**: Enregistrer les changements apportés à l'aide des commandes `git` vues précédemments puis déclencher de nouveau votre chaine CI. Vérifier sur github.com que tout soit en ordre.
+
+Si échec, veuillez debugger avant de continuer.
+
+Maintenant qu'il est possible de build son image Docker, il est intéressant d'automatiser le dépot de son image à chaque fin de build. Pour se faire, créer un compte personnel sur
+https://hub.docker.com/. Puis, lire  https://docs.docker.com/engine/reference/commandline/push/
+
+**IMPORTANT** une étape `docker login` est nécessaire pour s'authentifier auprès de Docker Hub. La ligne de commande ci-dessous permet de s'authentifier en fournissant une variable environnement `DOCKER_LOGIN` et un secret GitHub Actions `secrets.DOCKER_HUB_PASSWORD`.
+
+```sh
+docker login -u="${DOCKER_LOGIN}" -p="${{ secrets.DOCKER_HUB_PASSWORD }}"
 ```
 
-Vous obtenez `Test h1 text: OK` qui indique que le contenu de la balise `<h1>` est bien `Hello World`.
+8.a **TODO**: Créer le secret `DOCKER_HUB_PASSWORD` qui contiendra votre mot de passe Docker Hub, sur votre repository github [en suivant cette documentation](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository).
 
-À présent, il faut que ce fichier de test soit exécuter automatiquement par la chaine CI/CD, à l'étape de test.
+8.b **TODO**: Rajouter une variable d'environnement `DOCKER_LOGIN` au niveau de votre job `build-test-upload` (ou au niveau de votre workflow). [Aidez-vous de la documentation](https://docs.github.com/en/actions/learn-github-actions/variables#defining-environment-variables-for-a-single-workflow).
 
-**TODO**: modifier le fichier `.github/workflows/main.yml` à l'étape de test pour executer le script de test `atelier/test.sh`. ([aide](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#understanding-the-workflow-file))
+8.c **TODO**: Rajouter l´étape **upload** qui permet de déposer votre image docker au sein d'un repository docker, ici votre espace Docker Hub personnel. Veuillez à :
+- Effectuer l'authentification via la commande `docker login`
+- Re-tagger votre image en rajoutant le prefixe `$DOCKER_LOGIN/` au tag de votre image (voir [documentation](https://docs.docker.com/engine/reference/commandline/push/#push-a-new-image-to-a-registry))
+- Pousser votre image (nouvellement re-taggé) sur le docker hub
 
-##### Tester la chaine CI
+9. **TODO**: Enregistrer les changements apportés à l'aide des commandes `git` vues précédemments puis déclencher de nouveau votre chaine CI. Vérifier sur github.com que tout soit en ordre. Vérifier aussi que votre image a bien été uploadé sur votre espace Docker Hub. 
 
-Maintenant que nos étapes `build` et `test` sont réalisées, il est intéressant de tester notre chaine. Pour cela, il faut enregistrer les ajouts effectués en créant un nouveau commit.
+Si toutes les étapes fonctionnent correctement, votre chaine CI est terminée. À présent, à chaque fois que votre répertoire GitHub connaitra des changements, GitHub Actions se chargera de tester la validité de votre projet en déclenchant votre chaine CI. Ainsi, si vous introduisez un bug (ou une faute de syntaxe), votre chaine CI vous remontera qu'une erreur est survenue. Cette chaine CI est donc utile car :
+- Elle automatise la partie fonctionnelle qui est: build, test et upload au sein d'un repertoire public.
+- Elle sert de métric / filtre contre les erreurs introduites par un développeur. Très utile lorsque le projet est maintenu par une équipe de développeurs.
 
-```bash
-git commit -a -m "Complétion des étapes build et test."
-```
+**ALLONS PLUS LOIN**
 
-On répercute les modifications faites sur la branche locale vers son homologue GitHub.
+Bien qu'il est aisé de concevoir une chaine CI grâce aux commandes Shell, il est parfois plus simple de faire appel aux actions présentes sur le GitHub Marketplace.
 
-```bash
-git push --set-upstream origin atl0_actif
-```
+10. **TODO**: Reproduire votre chaine CI - en omettant l'étape _test_ - en utilisant uniquement l'action [Build and push Docker images](https://github.com/marketplace/actions/build-and-push-docker-images).
 
-La précédente commande a du être interprété par GitHub Action et déclencher la chaine CI/CD que nous avons créé. Se rendre sur la page web du repo GitHub et **cliquer sur l'onglet Actions**.
+**NOTE** il est possible que certaine version d'OS disponible pour les _runners_ ne possèdent pas `docker` d'installé. Pour éviter toutes les étapes d'installations, l'usage des actions (comme celui utilisé au-dessus) permet d'abstraire l'installation du paquet et accélérer son usage d'une manière native à GitHub Actions (et transparent pour les développeurs).
 
-Cliquer sur le 1er item, correspondant au 1er déclenchement enregistré du au `push`.
+11. **TODO**: Rajouter un évènement déclencheur à votre workflow afin qu'il puisse être déclenché manuellement depuis github.com sur l'onglet Actions. [Voir les évènements disponibles](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows). Essayer de déclencher votre workflow manuellement.
 
-![Success 1](./img/atl0_success_1.png)
+Dupliquer votre fichier `.github/workflows/docker.yaml` et renommer le `.github/workflows/docker-compose.yaml`.
 
-Cliquer sur le bouton `build-test-deploy` pour afficher les détails de la chaine CI/CD.
-
-#### Partie CD
-
-Netlify est une solution gratuite qui permet d'héberger des sites statiques. On utilise l'Action qui permet de [déployer notre code source sur la plateforme Netlify](https://github.com/marketplace/actions/netlify-actions), qui nous sert d'environnement de production, c'est à dire, l'environnement public.
-
-Avant d'automatiser le déploiement sur Netlify, il est nécessaire de le déployer une 1er fois manuellement afin d'enregistrer notre site sur Netlify.
-
-##### Enregistrer notre projet sur Netlify
-
-1. Se rendre sur [cette page](https://app.netlify.com/) et cliquer sur l'onglet **Site** puis **Import from Git**.
-2. Cliquer sur le bouton de connexion **GitHub** et autoriser l'accès à votre repo.
-3. Séléctionner le repo Github, cliquer une fois sur le bouton `Customize` puis remplissez les informations suivantes :
-
-- **Branch to deploy**: `atl0_actif`
-- **Base directory**: `atelier/`
-- **Publish directory**: `atelier/`
-
-4. Valider en cliquant sur le bouton **Deploy site**
-
-Votre site sera deployé sous un nom de domaine personnalisé de la forme [https://<nom_aleatoire>.netlify.app](https://condescending-bohr-77878b.netlify.app). Cliquer dessus, et vous verrez un `Hello World` apparaitre!
-
-Sur le panel Netlify, cliquer sur le bouton **Site settings** et garder sous la main la valeur `Site ID`.
-
-![Site ID Netlify](./img/atl0_site_id.png)
-
-Ensuite, sur son compte Netlify, se rendre dans les [paramètres d'application](https://app.netlify.com/user/applications) et créer un **New Access Token** qui nous permets d'utiliser l'API de Netlify depuis GitHub Action. Garder aussi sous la main **le secret généré**.
-
-![Créer un New Access Token](./img/atl0_token_netlify.png)
-
-Se rendre sur votre repository GitHub, créer un nouveau secret `NETLIFY_AUTH_TOKEN` et coller le secret précédemment copié.
-Faire de meme pour `NETLIFY_SITE_ID` et coller la valeur que vous avez copié de `SITE_ID`.
-
-![Créer un secret sur GitHub Action](./img/atl0_netlify_secret.png)
-![Secrets on GitHub](./img/atl0_repo_secrets.png)
-
-Enfin, remplacer l'étape existante de publication par le code ci-dessous, qui appelle à l'action `Netlify-actions`.
-
-```yml
-- name: "[CD] Publication du code"
-  uses: nwtgck/actions-netlify@v1.2
-  with:
-    publish-dir: "./atelier"
-    production-branch: atl0_actif
-  env:
-    NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-    NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-```
-
-**Explication du code** : GitHub Actions nous sert de **serveur d'intégration**. Pour faciliter l'automatisation des tâches les plus connues et utilisées par les développeurs, la plateforme GitHub propose ce qu'elle appelle des **Actions** qui sont **plugins / extensions** qui facilitent l'écriture de la chaine CI/CD sur des étapes définies. Chaque utilisateur GitHub peut développer ses propres actions et ses actions seront accessible par tous.
-Décortiquons le code ci-dessus :
-
-- Le mot-clé `uses:` : indique que cette étape utilise une action (et non une commande shell). La valeur attendue correspond à URI de l'action.
-- `nwtgck/actions-netlify@v1.2` : est l'action que nous utilisons. Elle facilite (_cache_) le déploiement sur Netlify. L'URI est décomposée comme-ceci :
-  - `nwtgck/` : l'utilisateur GitHub qui met en service l'action
-  - `actions-netlify` : le repository GitHub de l'utilisateur `nwtgck` où se trouve le code source de son action `actions-netlify`.
-  - `@v1.2` : le tag de la version a utilisé. Une action peut avoir plusieurs versions (ie. `@v1`, `@beta-version`, ...)
-- Le mot-clé `with:` : contient tous les paramètres de l'action utilisée (obligatoires et/ou optionnels) à définir.
-  - `publish-dir:` est un paramètre attendu de l'action `actions-netlify` qui prendra comme valeur `"./atelier"` lorsque la chaine CI/CD s'exécutera.
-- Le mot-clé `env:` : contient toutes les variables d'environnements et secrets qui sont attendus par l'action pour fonctionner.
-
-Pour tester que le déploiement s'effectue automatiquement à chaque `push`, nous allons rajouter du texte dans notre fichier `atelier/index.html`
-Remplacer les balises `<body>...</body>` par le contenu ci-dessous :
-
-```html
-<body>
-  <h1 id="header-hello">Hello World</h1>
-  <p id="mon-message">
-    Je suis arrivé(e) à <strong>l'étape publication</strong> de
-    <a href="https://github.com/Rxinui/iut-atelier-ci-cd/tree/atl0"
-      >l'atelier 0</a
-    >
-    !
-  </p>
-</body>
-```
-
-Enregistrez les modifications par un nouveau commit et on répercute les modifications sur GitHub :
-
-```bash
-git commit -a -m "Ajout d'un message pour tester l'etape publication automatique";
-git push
-```
-
-La chaine CI/CD a du être déclenchée à nouveau. Si le status de la chaine CI/CD est verte, alors votre site en production a du être mis-à-jour.
-
-**TODO**: Vérifiez que votre site en production affiche les changements.
-
-Nous considérons que notre chaine CI/CD est correcte et terminée ! Nous allons donc produire un cas d'erreur afin de planter notre chaine.
-
-Modifier dans le fichier `atelier/index.html` la balise `<h1>...</h1>` par le code ci-dessous
-
-```html
-<h1 id="header-hello">Hello World of CI/CD</h1>
-```
-
-Enregistrez les modifications par un nouveau commit et on répercute les modifications sur GitHub :
-
-```bash
-git commit -a -m "Cas d'erreur sur notre chaine CI/CD (non résolu)";
-git push
-```
-
-**TODO**: À quelle étape notre chaine CI/CD s'est plantée ? Pourquoi ? Notre site en production a-t-il été mis à jour ? Vérifiez.
-
-**TODO**: Trouver ce qu'il faille faire pour que notre chaine CI/CD soit de nouveau acceptée, puis exécuter les commandes suivantes.
-
-```bash
-git commit -a -m "Cas d'erreur sur notre chaine CI/CD (résolu)";
-git push
-```
-
-Puis vérifiez le site en production sur Netlify.
+12. **TODO**: Adapter ce nouveau workflow pour qu'il exécute le même procédé mais cette fois-ci, sur un fichier `docker-compose.yaml`. 
 
 _That's all folks :)_
