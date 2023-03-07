@@ -2,9 +2,9 @@
 
 @author Rxinui
 
-## Atelier 0 : Hello World of CI/CD
+## Atelier 0 : Docker dans la CI
 
-### Pré-requis
+### :bangbang: Pré-requis
 
 Les technologies qui seront utilisées lors de cet atelier nécessitent :
 
@@ -17,11 +17,11 @@ Un compte utilisateur sur :
 - [Github (intégration)](https://github.com/login)
 - [Docker Hub (repository)](https://hub.docker.com/)
 
-### Introduction
+### :book: Introduction
 
 Dans ce tutoriel, on va mettre en place **une chaîne CI/CD** en se basant sur l'atelier Docker de Sébastien Josset. Dans un premier temps, on s'intéressera à la partie intégration continue (CI) puis à la partie déploiment continu (CD).
 
-#### Continuous Integration
+### :recycle: Continuous Integration
 
 Dans le cas de Docker, un schéma classique d'une chaine CI consiste à :
 
@@ -43,7 +43,7 @@ Pour synthétiser, il est important de définir dans l'ordre suivant:
 3. Une ou plusieurs **étapes** qui seront exécutées au sein d'un **job**
 
 
-### GitHub Action : responsable de la chaine CI/CD
+### :octocat: GitHub Action : responsable de la chaine CI/CD
 
 GitHub propose la création d'une chaine CI/CD avec sa solution maison nommée **GitHub Action**.
 L'avantage de **GitHub Action** est qu'il s'applique sur les codes sources hébergés sur GitHub et offre au développeurs des modules de CI/CD appelées **Actions** disponible sur le [GitHub marketplace](https://github.com/marketplace?type=actions).
@@ -57,7 +57,7 @@ Dans cet atelier, on épargnera plusieurs concepts et termes de GitHub Action. J
 
 1. **TODO**: déclarer votre premier workflow appelé `docker.yaml`. Ajouter ce workflow a votre repository puis pousser vos changements sur github. Vérifier que votre workflow est présent, dans l'onglet _Actions_, sur le panel situé à votre gauche.
 
-### Une chaine CI sur un Dockerfile
+### :whale: Une chaine CI pour Docker
 
 Cette chaîne va se baser sur le [schéma classique](#continuous-integration) décrit au-dessus.
 
@@ -79,20 +79,50 @@ Avant de continuer sur la définition d'étapes, testons le bon fonctionnement d
 
 Vérifier que sur github.com dans l'onglet _Actions_ de votre projet, que votre chaine CI est en cours d'exécution ou terminée. Si succès, veuillez continuer l'atelier. Sinon, debugger les éventuelles erreurs (_ne pas hésiter à demander de l'aide sur le serveur discord_).
 
-6. **TODO**: Rajouter une nouvelle étape, qui servira à tester l'image construire en démarrant un _container_ docker basé sur cette image. Puis, vérifier que le serveur nginx soit bien accessible via son protocole HTTP(S).
+6. **TODO**: Rajouter une nouvelle étape, qui servira à tester l'image construire **en démarrant un _container_ docker basé sur cette image**. Puis, vérifier que le serveur web (apache?) soit bien accessible via son protocole HTTP(S) (en utilisant la commande [curl](https://curl.se/docs/manpage.html) par exemple).
+
+**NOTE**: sous Shell, il est possible de vérifier si la dernière commande éxécutée s'est terminée correctement (`exit 0`) ou non (exit avec un code différent de `0`). La variable spéciale `$?` permet de retourner le code de terminaison de la dernière commande effectuée.
 
 7. **TODO**: Enregistrer les changements apportés à l'aide des commandes `git` vues précédemments puis déclencher de nouveau votre chaine CI. Vérifier sur github.com que tout soit en ordre.
 
 Si échec, veuillez debugger avant de continuer.
 
-8. **TODO**: Rajouter l´étape **upload** qui permet de déposer votre image docker au sein d'un repository docker, ici votre espace Docker Hub personnel.
+Maintenant qu'il est possible de build son image Docker, il est intéressant d'automatiser le dépot de son image à chaque fin de build. Pour se faire, créer un compte personnel sur
+https://hub.docker.com/. Puis, lire  https://docs.docker.com/engine/reference/commandline/push/
 
-9. **TODO**: Enregistrer les changements apportés à l'aide des commandes `git` vues précédemments puis déclencher de nouveau votre chaine CI. Vérifier sur github.com que tout soit en ordre.
+**IMPORTANT** une étape `docker login` est nécessaire pour s'authentifier auprès de Docker Hub. La ligne de commande ci-dessous permet de s'authentifier en fournissant une variable environnement `DOCKER_LOGIN` et un secret GitHub Actions `secrets.DOCKER_HUB_PASSWORD`.
+
+```sh
+docker login -u="${DOCKER_LOGIN}" -p="${{ secrets.DOCKER_HUB_PASSWORD }}"
+```
+
+8.a **TODO**: Créer le secret `DOCKER_HUB_PASSWORD` qui contiendra votre mot de passe Docker Hub, sur votre repository github [en suivant cette documentation](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository).
+
+8.b **TODO**: Rajouter une variable d'environnement `DOCKER_LOGIN` au niveau de votre job `build-test-upload` (ou au niveau de votre workflow). [Aidez-vous de la documentation](https://docs.github.com/en/actions/learn-github-actions/variables#defining-environment-variables-for-a-single-workflow).
+
+8.c **TODO**: Rajouter l´étape **upload** qui permet de déposer votre image docker au sein d'un repository docker, ici votre espace Docker Hub personnel. Veuillez à :
+- Effectuer l'authentification via la commande `docker login`
+- Re-tagger votre image en rajoutant le prefixe `$DOCKER_LOGIN/` au tag de votre image (voir [documentation](https://docs.docker.com/engine/reference/commandline/push/#push-a-new-image-to-a-registry))
+- Pousser votre image (nouvellement re-taggé) sur le docker hub
+
+9. **TODO**: Enregistrer les changements apportés à l'aide des commandes `git` vues précédemments puis déclencher de nouveau votre chaine CI. Vérifier sur github.com que tout soit en ordre. Vérifier aussi que votre image a bien été uploadé sur votre espace Docker Hub. 
 
 Si toutes les étapes fonctionnent correctement, votre chaine CI est terminée. À présent, à chaque fois que votre répertoire GitHub connaitra des changements, GitHub Actions se chargera de tester la validité de votre projet en déclenchant votre chaine CI. Ainsi, si vous introduisez un bug (ou une faute de syntaxe), votre chaine CI vous remontera qu'une erreur est survenue. Cette chaine CI est donc utile car :
 - Elle automatise la partie fonctionnelle qui est: build, test et upload au sein d'un repertoire public.
 - Elle sert de métric / filtre contre les erreurs introduites par un développeur. Très utile lorsque le projet est maintenu par une équipe de développeurs.
 
-### Une chaine CI sur un docker-compose
+**ALLONS PLUS LOIN**
+
+Bien qu'il est aisé de concevoir une chaine CI grâce aux commandes Shell, il est parfois plus simple de faire appel aux actions présentes sur le GitHub Marketplace.
+
+10. **TODO**: Reproduire votre chaine CI - en omettant l'étape _test_ - en utilisant uniquement l'action [Build and push Docker images](https://github.com/marketplace/actions/build-and-push-docker-images).
+
+**NOTE** il est possible que certaine version d'OS disponible pour les _runners_ ne possèdent pas `docker` d'installé. Pour éviter toutes les étapes d'installations, l'usage des actions (comme celui utilisé au-dessus) permet d'abstraire l'installation du paquet et accélérer son usage d'une manière native à GitHub Actions (et transparent pour les développeurs).
+
+11. **TODO**: Rajouter un évènement déclencheur à votre workflow afin qu'il puisse être déclenché manuellement depuis github.com sur l'onglet Actions. [Voir les évènements disponibles](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows). Essayer de déclencher votre workflow manuellement.
+
+Dupliquer votre fichier `.github/workflows/docker.yaml` et renommer le `.github/workflows/docker-compose.yaml`.
+
+12. **TODO**: Adapter ce nouveau workflow pour qu'il exécute le même procédé mais cette fois-ci, sur un fichier `docker-compose.yaml`. 
 
 _That's all folks :)_
